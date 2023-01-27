@@ -16,16 +16,14 @@ records = db['Records']
 findVehicle = list(vehicles.find())
 findRecord = list(records.find())
 selection = []
-recordModel = []
-record = []
 #db.Records.insert_one({"model":"tacoma", "miles": 230000,"date":"2023/24/1" ,"tasks":"oil change"})
 for item in findVehicle:
     selection.append(f"{item['model']}")
 
-for entry in findRecord:
+'''for entry in findRecord:
     recordModel.append(f"{entry['model']}")
     record.append(f"{entry['model']}")
     record.append(f"{entry['miles']}")
     record.append(f"{entry['date']}")
-    record.append(f"{entry['tasks']}")
+    record.append(f"{entry['tasks']}")'''
 #df = pd.DataFrame([record])

@@ -24,11 +24,11 @@ with tab2:
     with st.form("viewRecord"):
         records = st.selectbox(
             '',
-            (recordModel)
+            (selection)
         )
         "---"
         if st.form_submit_button("submit"):
-            st.table(data=df)
+
 #---Add Vehicle---
 with tab3:
     with st.form("addVehicle", clear_on_submit=True):
