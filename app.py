@@ -6,11 +6,8 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
 password = st.secrets["MONGOPW"]
-@st.experimental_singleton(suppress_st_warning=True)
-def init_connection():
-    return MongoClient(
-    f"""mongodb+srv://ashehorn:Shehorn1@cluster0.4miwcyq.mongodb.net/?retryWrites=true&w=majority""")
-cluster = init_connection()
+cluster = MongoClient(f"""mongodb+srv://ashehorn:{password}@cluster0.4miwcyq.mongodb.net/?retryWrites=true&w=majority""")
+
 
 db = cluster["Maintenance"]
 vehicles = db["Vehicles"]
