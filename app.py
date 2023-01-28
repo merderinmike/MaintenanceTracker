@@ -1,6 +1,5 @@
 import pandas as pd
 import streamlit as st
-from db_create import *
 from pymongo import MongoClient
 from dotenv import load_dotenv, find_dotenv
 from pymongo.collection import Collection
