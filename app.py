@@ -3,22 +3,23 @@ import streamlit as st
 from db_create import *
 from pymongo import MongoClient
 from dotenv import load_dotenv, find_dotenv
+from pymongo.collection import Collection
 import os
-
 from bson.objectid import ObjectId
 #----DB setup---
 load_dotenv(find_dotenv())
 
-password = os.environ.get("MONGOPW")
-
-cluster = MongoClient(
+password = os.getenv("MONGOPW")
+@st.experimental_singleton(suppress_st_warning=True)
+def init_connection():
+    return MongoClient(
     f"""mongodb+srv://ashehorn:{password}@cluster0.4miwcyq.mongodb.net/?retryWrites=true&w=majority""")
+cluster = init_connection()
+
 db = cluster["Maintenance"]
 vehicles = db["Vehicles"]
 records = db['Records']
-
 findVehicle = list(vehicles.find())
-
 selection = []
 recordModel = []
 record = []
