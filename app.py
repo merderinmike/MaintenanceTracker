@@ -2,16 +2,14 @@ import pandas as pd
 import streamlit as st
 from pymongo import MongoClient
 from dotenv import load_dotenv, find_dotenv
-import os
-from bson.objectid import ObjectId
 #----DB setup---
 load_dotenv(find_dotenv())
 
-#password = os.getenv("MONGOPW")
+password = st.secrets["MONGOPW"]
 @st.experimental_singleton(suppress_st_warning=True)
 def init_connection():
     return MongoClient(
-    f"""mongodb+srv://ashehorn:st.secrets[MONGOPW]@cluster0.4miwcyq.mongodb.net/?retryWrites=true&w=majority""")
+    f"""mongodb+srv://ashehorn:{password}@cluster0.4miwcyq.mongodb.net/?retryWrites=true&w=majority""")
 cluster = init_connection()
 
 db = cluster["Maintenance"]
