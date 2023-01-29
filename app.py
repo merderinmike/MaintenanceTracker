@@ -6,7 +6,6 @@ from dotenv import load_dotenv, find_dotenv
 
 # ----DB setup---
 load_dotenv(find_dotenv())
-
 password = st.secrets["MONGOPW"]
 cluster = MongoClient(
     f"""mongodb+srv://ashehorn:{password}@cluster0.4miwcyq.mongodb.net/?retryWrites=true&w=majority""")
@@ -25,7 +24,7 @@ for item in findVehicle:
 title = st.title('Vehicle Maintenance Tracker')
 header = st.subheader('Here you can view, edit, and create Maintenance information related to your specific vehicle')
 tab1, tab2, tab3, tab4 = st.tabs(["Add record", "View record", "Add Vehicle", "Remove Vehicle"])
-
+col1, col2 = st.columns(2)
 # ---Add Record---
 with tab1:
     with st.form('addrecord', clear_on_submit=True):
@@ -35,20 +34,18 @@ with tab1:
         miles = str(st.number_input("Enter miles of vehicle", key="miles", value=0, ))
         date = str(st.date_input("What was the date of Maintenance? "))
         tasks = st.text_area("Tasks", placeholder="What tasks were performed? ")
-        check = st.checkbox("Were parts used for this task?")
-        if check:
-            st.text_input("Enter Parts used")
-            if st.checkbox("Do you wish to enter the cost of parts?"):
-                cost = st.number_input()
+        parts = st.text_area("Enter what parts were used for this task (If none leave blank)")
+        cost = st.number_input("Enter total cost of task (Include any tools needed to complete task)", value=0,
+                               min_value=0)
         if st.form_submit_button("submit"):
-            records.insert_one({"model": vehicle, "miles": miles, "date": date, "tasks": tasks})
+            records.insert_one({"model": vehicle, "miles": miles, "date": date, "tasks": tasks, "parts": parts, "cost": cost})
             st.success("Record created")
-# ---View Record---
+# ---view record---
 with tab2:
     with st.form("viewRecord"):
         recordselect = st.selectbox(
             "Select a vehicle to view record",
-            (selection),
+            selection,
         )
         "---"
         if st.form_submit_button("submit"):
@@ -81,6 +78,7 @@ with tab4:
         )
         if st.form_submit_button("Remove"):
             vehicles.delete_many({"model": vehicleRemove})
+            records.delete_many({"model": vehicleRemove})
             st.success(f"{vehicleRemove} removed successfully")
             time.sleep(1)
             st.experimental_rerun()
