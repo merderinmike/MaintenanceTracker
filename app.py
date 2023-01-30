@@ -50,7 +50,7 @@ with tab2:
         "---"
         if st.form_submit_button("submit"):
             x = []
-            findRecord = list(records.find({'model': recordselect}))
+            findRecord = list(records.find({'model': recordselect}, {"_id": 0}))
             for entry in findRecord:
                 x.append(entry)
             df = pd.DataFrame(x)
