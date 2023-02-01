@@ -62,8 +62,8 @@ with tab2:
     for entry in findRecord:
         x.append(entry)
     df = pd.DataFrame(x)
-    st.table(df)
-
+    if recordselect != selection[0]:
+        st.table(df)
     action = st.selectbox("Edit or Remove a record?", ["Make Selection", "Edit", "Remove"])
     if action == "Edit":
         lst = []
@@ -154,5 +154,3 @@ with tab4:
             st.success(f"{vehicleRemove} removed successfully")
             time.sleep(1)
             st.experimental_rerun()
-
-# ---Edit/remove record---
