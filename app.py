@@ -47,6 +47,13 @@ with tab1:
             st.success("Record created")
 # ---view/edit/remove record---
 with tab2:
+    def clearCheck():
+        st.session_state["Tasks"] = False
+        st.session_state["Miles"] = False
+        st.session_state["Parts"] = False
+        st.session_state["Cost"] = False
+
+
     recordselect = st.selectbox(
         "Select a vehicle to view record", selection)
     "---"
@@ -60,27 +67,60 @@ with tab2:
     action = st.selectbox("Edit or Remove a record?", ["Make Selection", "Edit", "Remove"])
     if action == "Edit":
         lst = []
-        with st.form("Edit", clear_on_submit=True):
-            findRecord = list(records.find({'model': recordselect}, {"_id": 0}))
-            for x in findRecord:
-                lst.append(x)
-            recordEdit = st.selectbox("Select your record", [lst[0]['tasks']])
-            tasks = st.text_area("Tasks", placeholder="What tasks were performed? ", key="tasks1")
-            miles = str(st.number_input("Enter miles of vehicle", key="miles1", value=0, ))
-            parts = st.text_area("Enter what parts were used for this task (If none leave blank)", key="parts1")
-            cost = st.number_input("Enter total cost of task (Include any tools needed to complete task)", key="cost1",
-                                   value=0,
-                                   min_value=0)
-            records.update_many({"$and": [{"model": recordselect}, {"date": recordEdit}]},
-                                {"$set": {"miles": miles, "tasks": tasks, "parts": parts, "cost": cost}})
-            if st.form_submit_button("Submit"):
+        findRecord = list(records.find({'model': recordselect}, {"_id": 0}))
+        for x in findRecord:
+            lst.append(x)
+        recordEdit = st.selectbox("Select your record", [lst[0]['tasks']])
+        checks = st.columns(4)
+        button1, button2 = st.columns(2)
+        with checks[0]:
+            checkTasks = st.checkbox("Tasks", key="Tasks")
+        with checks[1]:
+            checkMiles = st.checkbox("Miles", key="Miles")
+        with checks[2]:
+            checkParts = st.checkbox("Parts", key="Parts")
+        with checks[3]:
+            checkCost = st.checkbox("Cost", key="Cost")
+        with st.form("Edit"):
+            if checkTasks:
+                tasks = st.text_area("Tasks", placeholder="What tasks were performed? ", key="tasks1")
+            else:
+                tasks = lst[0]['tasks']
+            if checkMiles:
+                miles = str(st.number_input("Enter miles of vehicle", key="miles1", value=0, ))
+            else:
+                miles = lst[0]['miles']
+            if checkParts:
+                parts = st.text_area("Enter what parts were used for this task (If none leave blank)", key="parts1")
+            else:
+                parts = lst[0]['parts']
+            if checkCost:
+                cost = st.number_input("Enter total cost of task (Include any tools needed to complete task)",
+                                       key="cost1",
+                                       value=0,
+                                       min_value=0)
+            else:
+                cost = lst[0]['cost']
+            if st.form_submit_button("update"):
+                records.update_many({"$and": [{"tasks": recordEdit}]},
+                                    {"$set": {"miles": miles, "tasks": tasks, "parts": parts, "cost": cost}})
+            if st.form_submit_button("Submit", on_click=clearCheck):
                 st.experimental_rerun()
     elif action == "Remove":
-        with st.form("Remove", clear_on_submit=True):
-            recordRemove = st.text_input("Enter the date of the record you wish to edit from the table above: ")
-            records.delete_one({"date": recordRemove})
-            if st.form_submit_button("Submit"):
-                st.experimental_rerun()
+        lst = []
+        try:
+            with st.form("Remove"):
+                findRecord = list(records.find({'model': recordselect}, {"_id": 0}))
+                for x in findRecord:
+                    lst.append(x)
+
+                recordRemove = st.selectbox("Select your record", [lst[0]['tasks']])
+                records.delete_one({"tasks": recordRemove})
+                if st.form_submit_button("Submit"):
+                    st.experimental_rerun()
+        except:
+            st.error("There is no record for this vehicle to remove")
+
 # ---Add Vehicle---
 with tab3:
     with st.form("addVehicle", clear_on_submit=True):
@@ -100,7 +140,7 @@ with tab3:
 with tab4:
     with st.form("removeVehicle", clear_on_submit=True):
         vehicleRemove = st.selectbox(
-            "Select a vehicle to add a record: ", selection, label_visibility="visible"
+            "Select a vehicle to remove: ", selection, label_visibility="visible"
         )
         if st.form_submit_button("Remove"):
             vehicles.delete_many({"model": vehicleRemove})
@@ -108,4 +148,5 @@ with tab4:
             st.success(f"{vehicleRemove} removed successfully")
             time.sleep(1)
             st.experimental_rerun()
+
 # ---Edit/remove record---
