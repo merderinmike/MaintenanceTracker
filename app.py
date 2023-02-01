@@ -66,11 +66,11 @@ with tab2:
 
     action = st.selectbox("Edit or Remove a record?", ["Make Selection", "Edit", "Remove"])
     if action == "Edit":
+        lst = []
+        findRecord = list(records.find({'model': recordselect}, {"_id": 0}))
+        for x in findRecord:
+            lst.append(x)
         try:
-            lst = []
-            findRecord = list(records.find({'model': recordselect}, {"_id": 0}))
-            for x in findRecord:
-                lst.append(x)
             recordEdit = st.selectbox("Select your record", [lst[0]['tasks']])
             checks = st.columns(4)
             button1, button2 = st.columns(2)
