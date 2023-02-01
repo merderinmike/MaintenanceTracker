@@ -115,9 +115,15 @@ with tab2:
                 for x in findRecord:
                     lst.append(x)
                 recordRemove = st.selectbox("Select your record", [lst[0]['tasks']])
-                if st.form_submit_button("Submit"):
+
+
+                def remove():
                     records.delete_one({"tasks": recordRemove})
                     st.experimental_rerun()
+
+
+                st.form_submit_button("Submit", on_click=remove)
+
         except:
             st.error("There are no records for this vehicle to be removed")
 
