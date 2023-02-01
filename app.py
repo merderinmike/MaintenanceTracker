@@ -109,17 +109,15 @@ with tab2:
 
     elif action == "Remove":
         lst = []
-        try:
-            with st.form("Remove"):
-                findRecord = list(records.find({'model': recordselect}, {"_id": 0}))
-                for x in findRecord:
-                    lst.append(x)
-                recordRemove = st.selectbox("Select your record", [lst[0]['tasks']])
-                records.delete_one({"tasks": recordRemove})
-                if st.form_submit_button("Submit"):
-                    st.experimental_rerun()
-        except:
-            st.error("There is no record for this vehicle to remove")
+        with st.form("Remove"):
+            findRecord = list(records.find({'model': recordselect}, {"_id": 0}))
+            for x in findRecord:
+                lst.append(x)
+            recordRemove = st.selectbox("Select your record", [lst[0]['tasks']])
+            records.delete_one({"tasks": recordRemove})
+            if st.form_submit_button("Submit"):
+                st.experimental_rerun()
+
 
 # ---Add Vehicle---
 with tab3:
